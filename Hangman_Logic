@@ -1,0 +1,94 @@
+class HangmanGame{
+  String word;
+  String correct_guesses;
+  String wrong_guesses;
+
+
+  HangmanGame(this.word) {
+    correct_guesses = "";
+    wrong_guesses = "";
+  }
+ 
+  bool guess(String letter) {
+
+    final validCharacters = RegExp("[a-zA-Z]");
+
+    if(letter == null) {
+      throw new ArgumentError();
+    }
+    if(letter.isEmpty){ //|| letter != '[a-zA-Z]') {
+      throw new ArgumentError();
+    }
+    if(!validCharacters.hasMatch(letter)) {
+      throw new ArgumentError();
+    }
+
+    if(correct_guesses.contains(letter.toLowerCase()) || correct_guesses.contains(letter.toUpperCase())) {
+        return false;
+      }
+    
+    if(wrong_guesses.contains(letter.toLowerCase()) || wrong_guesses.contains(letter.toUpperCase())) {
+        return false;
+      }
+    
+    if(word.contains(letter)) {
+      
+      if(!correct_guesses.contains(letter)) {
+        correct_guesses += letter;
+      }
+      
+      
+      return true;
+    }
+    else {
+      if(!wrong_guesses.contains(letter)) {
+        //throw new ArgumentError();
+
+        wrong_guesses += letter;
+        
+      }
+      return true;
+    }
+  }
+
+  String get blanks_with_correct_guesses {
+    List<String> blank = new List(word.length); 
+    String tmp = "";
+    
+    for(int i = 0; i < word.length; ++i) {
+      blank[i] = "-";
+    }
+
+    if(correct_guesses.isEmpty == true) {
+     for(int i = 0; i < word.length; ++i) {
+        tmp += blank[i];
+        
+      }
+    }
+    else {
+      for(int i = 0; i < word.length; ++i) {
+        for(int j = 0; j < correct_guesses.length; ++j) {
+          if(word[i] == correct_guesses[j]) {
+            blank[i] = word[i];
+          }
+        }
+      }
+      for(int i = 0; i < blank.length; ++i) {
+        tmp += blank[i];
+      }
+    }
+    return tmp;
+  }
+
+  String get status {
+    if(wrong_guesses.length >= 7) {
+      return 'lose';
+    }
+    else if (blanks_with_correct_guesses == word) {
+      return 'win';
+    }
+    else {
+      return 'play';
+    }
+  }
+}
